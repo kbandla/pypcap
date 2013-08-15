@@ -1,7 +1,9 @@
 # pypcap
 
 Python/C bindings for the libpcap library.
-Most of the functions are 1:1 mapped to the libpcap library.
+Most of the functions are 1:1 mapped to the libpcap library. 
+ 
+Seems fairly stable on OSX. Needs some more work before it will work on linux.
 
 ## Example 1
 
@@ -21,8 +23,8 @@ Most of the functions are 1:1 mapped to the libpcap library.
 
 ```python
 from pypcap, dpkt
-pc = pcap()
-x.pcap_create( 'en1' )
+x = pcap()
+x.pcap_create( 'eth0' )
 x.pcap_set_buffer_size( 1000 )
 x.pcap_set_snaplen( 576 )
 x.pcap_set_timeout( 512 )
@@ -31,13 +33,21 @@ x.pcap_activate()
 x.pcap_compile( 'udp' )
 
 def pcap_callback(pkt):
+    # do stuff with packet
     eth = dpkt.ethernet.Ethernet(pkt)
-    ip = eth.data
-    udp = ip.data
-    dns = dpkt.dns.DNS(udp.data)
-    for qd in dns.qd:
-        print qd.name
 
 x.pcap_set_callback(pcap_callback)
 x.pcap_loop()
 ```
+
+### License
+See LICENSE file
+
+### Requires
+* Python 2.5 or later
+* python-dev
+* libpcap-dev
+
+### Tested on
+* OSX 10.8  - x86_64
+* Did not test on linux yet
