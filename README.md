@@ -22,7 +22,8 @@ Seems fairly stable on OSX. Needs some more work before it will work on linux.
 ## Example 2
 
 ```python
-from pypcap, dpkt
+from pypcap import pcap
+import dpkt
 x = pcap()
 x.pcap_create( 'eth0' )
 x.pcap_set_buffer_size( 1000 )
