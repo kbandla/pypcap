@@ -337,7 +337,6 @@ pypcap_pcap_compile(PyPcapObject *self, PyObject *args)
 void handle_pkt(PyPcapObject *self, const struct pcap_pkthdr* pkthdr, const u_char* packet)
 {
     if(PyErr_CheckSignals()){
-        //printf("Got termination signal\n");
         pcap_breakloop(self->pcap);
     }
     // TODO: extract the timestamp and pass on the call back
@@ -397,16 +396,11 @@ pypcap_pcap_sendpacket(PyPcapObject *self, PyObject *args)
         return NULL;
     }
     
-    printf("length = %d\n", length);
-
     if(pcap_sendpacket(self->pcap, buffer, length) == -1){
-        //error
         PyErr_SetString(PyPcap_Error, pcap_geterr(self->pcap));
         return NULL;
     }
-    printf("OK?\n");
     Py_RETURN_TRUE;
-
 }
 
 static PyObject *
@@ -437,8 +431,8 @@ static PyObject *
 pypcap_pcap_set_rfmon(PyPcapObject *self, PyObject *args)
 {
     PyObject *input;
-    PyCHECK_SELF;
     int rfmon;
+    PyCHECK_SELF;
     if (!PyArg_ParseTuple(args, "O", &input)){
         PyErr_SetString(PyPcap_Error, "Error assigning to input");
         return NULL;
