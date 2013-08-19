@@ -53,7 +53,8 @@ Most of the functions are 1:1 mapped to the libpcap library. </p>
 <h2>
 <a name="example-2" class="anchor" href="#example-2"><span class="octicon octicon-link"></span></a>Example 2</h2>
 
-<div class="highlight"><pre><span class="kn">from</span> <span class="nn">pypcap</span><span class="p">,</span> <span class="n">dpkt</span>
+<div class="highlight"><pre><span class="kn">from</span> <span class="nn">pypcap</span> <span class="kn">import</span> <span class="n">pcap</span>
+<span class="kn">import</span> <span class="nn">dpkt</span>
 <span class="n">x</span> <span class="o">=</span> <span class="n">pcap</span><span class="p">()</span>
 <span class="n">x</span><span class="o">.</span><span class="n">pcap_create</span><span class="p">(</span> <span class="s">'eth0'</span> <span class="p">)</span>
 <span class="n">x</span><span class="o">.</span><span class="n">pcap_set_buffer_size</span><span class="p">(</span> <span class="mi">1000</span> <span class="p">)</span>
