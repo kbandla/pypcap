@@ -1,0 +1,159 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module pypcap</title>
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>pypcap</strong></big></big></font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:/Volumes/DATA/devel/lib/python/pypcap.so">/Volumes/DATA/devel/lib/python/pypcap.so</a></font></td></tr></table>
+    <p><tt>C/Python&nbsp;bindings&nbsp;for&nbsp;libpcap</tt></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ee77aa">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Classes</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#ee77aa"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl>
+<dt><font face="helvetica, arial"><a href="__builtin__.html#object">__builtin__.object</a>
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial">pypcap
+</font></dt></dl>
+</dd>
+</dl>
+ <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><strong>pcap</strong> = <a name="pcap">class pypcap</a>(<a href="__builtin__.html#object">__builtin__.object</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>Python/C&nbsp;API&nbsp;for&nbsp;libpcap<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="pypcap-__init__"><strong>__init__</strong></a>(...)</dt><dd><tt>x.<a href="#pcap-__init__">__init__</a>(...)&nbsp;initializes&nbsp;x;&nbsp;see&nbsp;help(type(x))&nbsp;for&nbsp;signature</tt></dd></dl>
+
+<dl><dt><a name="pypcap-pcap_activate"><strong>pcap_activate</strong></a>(...)</dt><dd><tt><a href="#pcap-pcap_activate">pcap_activate</a>()&nbsp;-&gt;&nbsp;bool<br>
+&nbsp;<br>
+Activate&nbsp;a&nbsp;capture&nbsp;handle<br>
+Raises&nbsp;an&nbsp;exception&nbsp;with&nbsp;an&nbsp;appropriate&nbsp;message&nbsp;in&nbsp;case&nbsp;of&nbsp;errors</tt></dd></dl>
+
+<dl><dt><a name="pypcap-pcap_can_set_rfmon"><strong>pcap_can_set_rfmon</strong></a>(...)</dt><dd><tt><a href="#pcap-pcap_can_set_rfmon">pcap_can_set_rfmon</a>()&nbsp;-&gt;&nbsp;bool<br>
+&nbsp;<br>
+Check&nbsp;whether&nbsp;monitor&nbsp;mode&nbsp;can&nbsp;be&nbsp;set&nbsp;for&nbsp;a&nbsp;not-yet-activated&nbsp;capture&nbsp;handle</tt></dd></dl>
+
+<dl><dt><a name="pypcap-pcap_compile"><strong>pcap_compile</strong></a>(...)</dt><dd><tt><a href="#pcap-pcap_compile">pcap_compile</a>(&nbsp;capture_filter&nbsp;)&nbsp;--&gt;&nbsp;bool<br>
+&nbsp;<br>
+Compile&nbsp;a&nbsp;filter&nbsp;expression</tt></dd></dl>
+
+<dl><dt><a name="pypcap-pcap_create"><strong>pcap_create</strong></a>(...)</dt><dd><tt><a href="#pcap-pcap_create">pcap_create</a>(&nbsp;interface&nbsp;)&nbsp;-&gt;&nbsp;bool<br>
+&nbsp;<br>
+Create&nbsp;a&nbsp;live&nbsp;capture&nbsp;handle<br>
+Raises&nbsp;an&nbsp;exception&nbsp;with&nbsp;an&nbsp;appropriate&nbsp;message&nbsp;in&nbsp;case&nbsp;of&nbsp;errors<br>
+Returns&nbsp;a&nbsp;True&nbsp;if&nbsp;it&nbsp;was&nbsp;successful</tt></dd></dl>
+
+<dl><dt><a name="pypcap-pcap_datalink"><strong>pcap_datalink</strong></a>(...)</dt><dd><tt><a href="#pcap-pcap_datalink">pcap_datalink</a>()&nbsp;-&gt;&nbsp;int<br>
+&nbsp;<br>
+Get&nbsp;the&nbsp;link-layer&nbsp;header&nbsp;type</tt></dd></dl>
+
+<dl><dt><a name="pypcap-pcap_datalink_val_to_description"><strong>pcap_datalink_val_to_description</strong></a>(...)</dt><dd><tt><a href="#pcap-pcap_datalink_val_to_description">pcap_datalink_val_to_description</a>()&nbsp;-&gt;&nbsp;s<br>
+&nbsp;<br>
+get&nbsp;a&nbsp;name&nbsp;or&nbsp;description&nbsp;for&nbsp;a&nbsp;link-layer&nbsp;header&nbsp;type&nbsp;value</tt></dd></dl>
+
+<dl><dt><a name="pypcap-pcap_datalink_val_to_name"><strong>pcap_datalink_val_to_name</strong></a>(...)</dt><dd><tt><a href="#pcap-pcap_datalink_val_to_name">pcap_datalink_val_to_name</a>()&nbsp;-&gt;&nbsp;s<br>
+&nbsp;<br>
+get&nbsp;a&nbsp;name&nbsp;or&nbsp;description&nbsp;for&nbsp;a&nbsp;link-layer&nbsp;header&nbsp;type&nbsp;value</tt></dd></dl>
+
+<dl><dt><a name="pypcap-pcap_list_datalinks"><strong>pcap_list_datalinks</strong></a>(...)</dt><dd><tt><a href="#pcap-pcap_list_datalinks">pcap_list_datalinks</a>()&nbsp;-&gt;&nbsp;list<br>
+&nbsp;<br>
+Get&nbsp;a&nbsp;list&nbsp;of&nbsp;link-layer&nbsp;header&nbsp;types&nbsp;supported&nbsp;by&nbsp;a&nbsp;capture&nbsp;device</tt></dd></dl>
+
+<dl><dt><a name="pypcap-pcap_loop"><strong>pcap_loop</strong></a>(...)</dt><dd><tt><a href="#pcap-pcap_loop">pcap_loop</a>(&nbsp;[count],&nbsp;[uid]&nbsp;)&nbsp;-&gt;&nbsp;bool<br>
+&nbsp;<br>
+Starts&nbsp;the&nbsp;<a href="#pcap">pcap</a>&nbsp;capture&nbsp;loop<br>
+@count&nbsp;=&nbsp;Number&nbsp;of&nbsp;packets&nbsp;to&nbsp;capture.&nbsp;Default&nbsp;=&nbsp;unlimited<br>
+@uid&nbsp;=&nbsp;UID&nbsp;of&nbsp;the&nbsp;user&nbsp;to&nbsp;run&nbsp;as.&nbsp;You&nbsp;should&nbsp;use&nbsp;'nobody'<br>
+&nbsp;<br>
+For&nbsp;each&nbsp;packet&nbsp;captured,&nbsp;it&nbsp;will&nbsp;call&nbsp;the&nbsp;callback&nbsp;function&nbsp;<br>
+that&nbsp;was&nbsp;set&nbsp;via&nbsp;<a href="#pcap-pcap_set_callback">pcap_set_callback</a>()<br>
+For&nbsp;the&nbsp;UID,&nbsp;somehting&nbsp;like&nbsp;'pwd.getpwnam('nobody').pw_uid)'&nbsp;can&nbsp;be&nbsp;used</tt></dd></dl>
+
+<dl><dt><a name="pypcap-pcap_sendpacket"><strong>pcap_sendpacket</strong></a>(...)</dt><dd><tt><a href="#pcap-pcap_sendpacket">pcap_sendpacket</a>(&nbsp;packet&nbsp;)&nbsp;-&gt;&nbsp;bool<br>
+&nbsp;<br>
+Transmit&nbsp;a&nbsp;packet<br>
+Returns&nbsp;True&nbsp;if&nbsp;the&nbsp;packet&nbsp;is&nbsp;succesfully&nbsp;sent<br>
+Raises&nbsp;an&nbsp;exception&nbsp;otherwise.<br>
+The&nbsp;MAC&nbsp;CRC&nbsp;doesn't&nbsp;need&nbsp;to&nbsp;be&nbsp;included,&nbsp;because&nbsp;it&nbsp;is&nbsp;transparently&nbsp;calculated<br>
+and&nbsp;added&nbsp;by&nbsp;the&nbsp;network&nbsp;interface&nbsp;driver.<br>
+&nbsp;<br>
+Also&nbsp;see&nbsp;pcap_inject()</tt></dd></dl>
+
+<dl><dt><a name="pypcap-pcap_set_buffer_size"><strong>pcap_set_buffer_size</strong></a>(...)</dt><dd><tt><a href="#pcap-pcap_set_buffer_size">pcap_set_buffer_size</a>(&nbsp;size&nbsp;)&nbsp;-&gt;&nbsp;bool<br>
+&nbsp;<br>
+Set&nbsp;the&nbsp;buffer&nbsp;size&nbsp;for&nbsp;a&nbsp;not-yet-activated&nbsp;capture&nbsp;handle</tt></dd></dl>
+
+<dl><dt><a name="pypcap-pcap_set_callback"><strong>pcap_set_callback</strong></a>(...)</dt><dd><tt><a href="#pcap-pcap_set_callback">pcap_set_callback</a>(&nbsp;func&nbsp;)&nbsp;-&gt;&nbsp;bool<br>
+&nbsp;<br>
+Set&nbsp;the&nbsp;callback&nbsp;which&nbsp;will&nbsp;be&nbsp;used&nbsp;by&nbsp;pcap_loop<br>
+Raises&nbsp;and&nbsp;exception&nbsp;with&nbsp;an&nbsp;appropriate&nbsp;message<br>
+Returns&nbsp;a&nbsp;True&nbsp;if&nbsp;it&nbsp;was&nbsp;successful</tt></dd></dl>
+
+<dl><dt><a name="pypcap-pcap_set_promisc"><strong>pcap_set_promisc</strong></a>(...)</dt><dd><tt><a href="#pcap-pcap_set_promisc">pcap_set_promisc</a>(&nbsp;bool&nbsp;)&nbsp;-&gt;&nbsp;bool<br>
+&nbsp;<br>
+Set&nbsp;promiscuous&nbsp;mode&nbsp;for&nbsp;a&nbsp;not-yet-activated&nbsp;capture&nbsp;handle</tt></dd></dl>
+
+<dl><dt><a name="pypcap-pcap_set_rfmon"><strong>pcap_set_rfmon</strong></a>(...)</dt><dd><tt><a href="#pcap-pcap_set_rfmon">pcap_set_rfmon</a>(&nbsp;bool&nbsp;)&nbsp;-&gt;&nbsp;bool<br>
+&nbsp;<br>
+Set&nbsp;monitor&nbsp;mode&nbsp;for&nbsp;a&nbsp;not-yet-activated&nbsp;capture&nbsp;handle<br>
+Returns&nbsp;True&nbsp;if&nbsp;sucessful&nbsp;else&nbsp;returns&nbsp;False</tt></dd></dl>
+
+<dl><dt><a name="pypcap-pcap_set_snaplen"><strong>pcap_set_snaplen</strong></a>(...)</dt><dd><tt><a href="#pcap-pcap_set_snaplen">pcap_set_snaplen</a>(&nbsp;len&nbsp;)&nbsp;-&gt;&nbsp;bool<br>
+&nbsp;<br>
+Set&nbsp;the&nbsp;snapshot&nbsp;length&nbsp;for&nbsp;a&nbsp;not-yet-activated&nbsp;capture&nbsp;handle</tt></dd></dl>
+
+<dl><dt><a name="pypcap-pcap_set_timeout"><strong>pcap_set_timeout</strong></a>(...)</dt><dd><tt><a href="#pcap-pcap_set_timeout">pcap_set_timeout</a>(&nbsp;timeout&nbsp;)&nbsp;-&gt;&nbsp;bool<br>
+&nbsp;<br>
+Set&nbsp;the&nbsp;read&nbsp;timeout&nbsp;for&nbsp;a&nbsp;not-yet-activated&nbsp;capture&nbsp;handle</tt></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>callback</strong></dt>
+<dd><tt>Callback&nbsp;function</tt></dd>
+</dl>
+<dl><dt><strong>error</strong></dt>
+<dd><tt>Error&nbsp;message</tt></dd>
+</dl>
+<dl><dt><strong>interface</strong></dt>
+<dd><tt>Interface&nbsp;name</tt></dd>
+</dl>
+<hr>
+Data and other attributes defined here:<br>
+<dl><dt><strong>__new__</strong> = &lt;built-in method __new__ of type object&gt;<dd><tt>T.<a href="#pcap-__new__">__new__</a>(S,&nbsp;...)&nbsp;-&gt;&nbsp;a&nbsp;new&nbsp;<a href="__builtin__.html#object">object</a>&nbsp;with&nbsp;type&nbsp;S,&nbsp;a&nbsp;subtype&nbsp;of&nbsp;T</tt></dl>
+
+</td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#eeaa77">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#eeaa77"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl><dt><a name="-pcap_findalldevs"><strong>pcap_findalldevs</strong></a>(...)</dt><dd><tt><a href="#-pcap_findalldevs">pcap_findalldevs</a>()&nbsp;-&gt;&nbsp;list<br>
+&nbsp;<br>
+Get&nbsp;a&nbsp;list&nbsp;of&nbsp;capture&nbsp;devices<br>
+Raises&nbsp;an&nbsp;exception&nbsp;with&nbsp;an&nbsp;appropriate&nbsp;message&nbsp;in&nbsp;case&nbsp;of&nbsp;errors</tt></dd></dl>
+ <dl><dt><a name="-pcap_lib_version"><strong>pcap_lib_version</strong></a>(...)</dt><dd><tt><a href="#-pcap_lib_version">pcap_lib_version</a>()&nbsp;-&gt;&nbsp;s<br>
+&nbsp;<br>
+get&nbsp;the&nbsp;version&nbsp;information&nbsp;for&nbsp;libpcap</tt></dd></dl>
+ <dl><dt><a name="-pcap_lookupdev"><strong>pcap_lookupdev</strong></a>(...)</dt><dd><tt><a href="#-pcap_lookupdev">pcap_lookupdev</a>()&nbsp;-&gt;&nbsp;s<br>
+&nbsp;<br>
+Find&nbsp;the&nbsp;default&nbsp;device&nbsp;on&nbsp;which&nbsp;to&nbsp;capture</tt></dd></dl>
+ <dl><dt><a name="-pcap_lookupnet"><strong>pcap_lookupnet</strong></a>(...)</dt><dd><tt><a href="#-pcap_lookupnet">pcap_lookupnet</a>(&nbsp;interface&nbsp;)&nbsp;-&gt;&nbsp;(ip,&nbsp;netmask)<br>
+&nbsp;<br>
+find&nbsp;the&nbsp;IPv4&nbsp;network&nbsp;number&nbsp;and&nbsp;netmask&nbsp;for&nbsp;a&nbsp;device<br>
+Raises&nbsp;an&nbsp;exception&nbsp;with&nbsp;an&nbsp;appropriate&nbsp;message&nbsp;in&nbsp;case&nbsp;of&nbsp;errors</tt></dd></dl>
+</td></tr></table>
+</body></html>
