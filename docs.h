@@ -18,6 +18,11 @@ PyDoc_STRVAR(pcap_create__doc__,
         "\n"
         );
 
+PyDoc_STRVAR(pcap_open_offline__doc__,
+        "pcap_open_offline( filepath ) -> bool\n\n"
+        "open a saved capture file for reading"
+        );
+
 PyDoc_STRVAR(pcap_lookupdev__doc__,
         "pcap_lookupdev() -> s\n\n"
         "Find the default device on which to capture\n"
@@ -126,3 +131,12 @@ PyDoc_STRVAR(pcap_list_datalinks__doc__,
         "Get a list of link-layer header types supported by a capture device\n"
         );
 
+PyDoc_STRVAR(pcap_snapshot__doc__,
+        "pcap_snapshot() -> int\n\n"
+        "get the snapshot length\n"
+        );
+
+PyDoc_STRVAR(pcap_datalink_name_to_val__doc__,
+        "pcap_datalink_name_to_val( name ) -> int\n\n"
+        "get  the  link-layer header type value corresponding to a header type name"
+        );

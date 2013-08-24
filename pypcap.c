@@ -22,22 +22,18 @@ typedef struct {
     PyObject_HEAD
     pcap_t *pcap;           // pcap object
     PyObject *interface;    // interface to capture on
-    PyObject *error;        // error message
     PyObject *callback;     // callback function
 } PyPcapObject;
 
 PyObject *arglist;
 PyObject *result;
-//PyObject *callback;
 int pcap_offset;
 char pcap_errbuf[PCAP_ERRBUF_SIZE];
-
 
 static void
 pypcap_dealloc(PyPcapObject* self)
 {
     Py_XDECREF(self->interface);
-    Py_XDECREF(self->error);
     if(self->pcap)
         pcap_close(self->pcap);
     self->ob_type->tp_free((PyObject*)self);
@@ -51,30 +47,27 @@ pypcap_new(PyTypeObject *type, PyObject *args, PyObject *kwds)
     self->pcap = NULL;
     self->interface = Py_None;
     self->callback = Py_None;
-    self->error = Py_None;
     return (PyObject *)self;
 }
 
 static int
 pypcap_init(PyPcapObject *self, PyObject *args, PyObject *kwds)
 {
-    PyObject *interface=NULL, *tmp;
+    PyObject *interface=NULL;
     static char *kwlist[] = {"interface", NULL};
-    if (! PyArg_ParseTupleAndKeywords(args, kwds, "|s", kwlist, &interface))
+    if (! PyArg_ParseTupleAndKeywords(args, kwds, "|O", kwlist, &interface))
         return -1; 
 
     if (interface) {
-        tmp = self->interface;
-        Py_INCREF(interface);
         self->interface = interface;
-        Py_XDECREF(tmp);
+        Py_XINCREF(self->interface);
     }
 
     return 0;
 }
 
 static PyObject*
-pypcap_pcap_lib_version(PyObject *self)
+pypcap_pcap_lib_version(PyObject *self, PyObject *args)
 {
     PyObject *version;
     version = PyString_FromString(pcap_lib_version());
@@ -85,12 +78,19 @@ static PyObject *
 pypcap_pcap_create(PyPcapObject *self, PyObject *args)
 {
     char *interface=NULL;
-    if (!PyArg_ParseTuple(args, "s", &interface)){
-        return NULL;
+    if(self->interface == Py_None){
+        if (!PyArg_ParseTuple(args, "s", &interface)){
+            return NULL;
+        }
+        // save interface
+        self->interface = PyString_FromString( interface );
+        Py_XINCREF(self->interface);
+    } else {
+        interface = PyString_AsString(self->interface);
     }
 
     if(getuid()!= 0){
-       PyErr_SetString(PyPcap_Error, "Sniffing requires root privileges");
+        PyErr_SetString(PyPcap_Error, "Sniffing requires root privileges");
         return NULL; 
     }
 
@@ -100,14 +100,31 @@ pypcap_pcap_create(PyPcapObject *self, PyObject *args)
        PyErr_SetString(PyPcap_Error, pcap_errbuf);
         return NULL; 
     }
-    // save interface
-    self->interface = PyString_FromString( interface );
+    Py_XINCREF(self->pcap);
     Py_RETURN_TRUE;
 }
 
+static PyObject *
+pypcap_pcap_open_offline(PyPcapObject *self, PyObject *args)
+{
+    char *filepath=NULL;
+    if (!PyArg_ParseTuple(args, "s", &filepath)){
+        return NULL;
+    }
+
+    self->pcap = pcap_open_offline( filepath, pcap_errbuf);
+
+    if(self->pcap==NULL){
+        PyErr_SetString(PyPcap_Error, pcap_errbuf);
+        return NULL; 
+    }
+    Py_XINCREF(self->pcap);
+    Py_RETURN_TRUE;
+
+}
 
 static PyObject *
-pypcap_lookupdev(PyObject *self)
+pypcap_lookupdev(PyObject *self, PyObject *args)
 {
     PyObject *pcap_device;
     char *device=NULL;
@@ -117,7 +134,7 @@ pypcap_lookupdev(PyObject *self)
 }
 
 static PyObject *
-pypcap_pcap_findalldevs(PyObject *self)
+pypcap_pcap_findalldevs(PyObject *self, PyObject *args)
 {
     PyObject *interfacesL = PyList_New(0);  // list of interfaces
     PyObject *tmp;
@@ -192,6 +209,26 @@ pypcap_pcap_datalink(PyPcapObject *self)
     PyCHECK_SELF;
     linklayer = PyInt_FromLong((long)pcap_datalink(self->pcap));
     return linklayer;
+}
+
+static PyObject *
+pypcap_pcap_datalink_name_to_val(PyObject *self, PyObject *args)
+{
+    char *linkName = NULL;
+    PyObject *linktype;
+    int linkType;
+    if (!PyArg_ParseTuple(args, "s", &linkName)){
+        return NULL;
+    }
+    linkType = pcap_datalink_name_to_val(linkName);
+    
+    if(linkType == -1){
+        PyErr_SetString(PyPcap_Error, "Error translating link name to value");
+        return NULL;
+    }
+
+    linktype = PyInt_FromLong((long)linkType);
+    return linktype;
 }
 
 static PyObject *
@@ -333,14 +370,22 @@ pypcap_pcap_compile(PyPcapObject *self, PyObject *args)
 }
 
 
-void handle_pkt(PyPcapObject *self, const struct pcap_pkthdr* pkthdr, const u_char* packet)
+void handle_pkt(u_char *user, const struct pcap_pkthdr* pkthdr, const u_char* packet)
 {
+    PyPcapObject *self;
+    self = (PyPcapObject*)user;
     if(PyErr_CheckSignals()){
         pcap_breakloop(self->pcap);
     }
     // TODO: extract the timestamp and pass on the call back
     arglist = Py_BuildValue("(s#)", packet, pkthdr->len);
+    PyGILState_STATE gstate;
+    gstate = PyGILState_Ensure();
     result = PyObject_CallObject( self->callback, arglist);
+    if(result == NULL){
+        pcap_breakloop(self->pcap);
+    }
+    PyGILState_Release(gstate);
     Py_DECREF(arglist);
 }
 
@@ -376,7 +421,7 @@ pypcap_pcap_loop(PyPcapObject *self, PyObject *args, PyObject *kwds)
             return NULL;
         }
     }
-    ret = pcap_loop(self->pcap, capture_count, handle_pkt, self);
+    ret = pcap_loop(self->pcap, capture_count, handle_pkt, (u_char*) self);
     if(ret == -1) {
         PyErr_SetString(PyPcap_Error, pcap_geterr(self->pcap));
         return NULL;
@@ -480,35 +525,45 @@ pypcap_pcap_list_datalinks(PyPcapObject *self)
     return datalinksL;
 }
 
+static PyObject *
+pypcap_pcap_snapshot(PyPcapObject *self, PyObject *args)
+{
+    PyObject *tmp;
+    tmp = PyInt_FromLong((long)pcap_snapshot(self->pcap));
+    return tmp;
+}
+
 static PyMemberDef PyPcap_Members[] = {
     {"interface", T_OBJECT_EX, offsetof(PyPcapObject, interface), 0, "Interface name"},
-    {"error", T_OBJECT_EX, offsetof(PyPcapObject, error), 0, "Error message"},
     {"callback", T_OBJECT_EX, offsetof(PyPcapObject, callback), 0, "Callback function"},
     {NULL}  /* Sentinel */
 };
 
 static PyMethodDef PyPcap_Methods[] = {
-    {"pcap_create", pypcap_pcap_create, METH_VARARGS, pcap_create__doc__},
-    {"pcap_datalink", pypcap_pcap_datalink, METH_VARARGS, pcap_datalink__doc__},
-    {"pcap_datalink_val_to_name", pypcap_pcap_datalink_val_to_name, METH_VARARGS, pcap_datalink_val_to_name__doc__},
-    {"pcap_datalink_val_to_description", pypcap_pcap_datalink_val_to_description, METH_VARARGS, pcap_datalink_val_to_description__doc__},
-    {"pcap_set_buffer_size", pypcap_pcap_set_buffer_size, METH_VARARGS, pcap_set_buffer_size__doc__},
-    {"pcap_set_snaplen", pypcap_pcap_set_snaplen, METH_VARARGS, pcap_set_snaplen__doc__},
-    {"pcap_set_timeout", pypcap_pcap_set_timeout, METH_VARARGS, pcap_set_timeout__doc__},
-    {"pcap_set_promisc", pypcap_pcap_set_promisc, METH_VARARGS, pcap_set_promisc__doc__},
-    {"pcap_activate",       pypcap_pcap_activate,   METH_VARARGS, pcap_activate__doc__},
-    {"pcap_compile",        pypcap_pcap_compile,    METH_VARARGS, pcap_compile__doc__},
-    {"pcap_set_callback",   pypcap_pcap_set_callback, METH_VARARGS, pcap_set_callback__doc__},
-    {"pcap_loop",           pypcap_pcap_loop,       METH_VARARGS|METH_KEYWORDS, pcap_loop__doc__},
-    {"pcap_sendpacket",     pypcap_pcap_sendpacket, METH_VARARGS, pcap_sendpacket__doc__},
-    {"pcap_set_rfmon",      pypcap_pcap_set_rfmon,  METH_VARARGS, pcap_set_rfmon__doc__},
-    {"pcap_can_set_rfmon",  pypcap_pcap_can_set_rfmon, METH_VARARGS, pcap_can_set_rfmon__doc__},
-    {"pcap_list_datalinks", pypcap_pcap_list_datalinks, METH_VARARGS, pcap_list_datalinks__doc__},
+    {"pcap_create", (PyCFunction)pypcap_pcap_create, METH_VARARGS, pcap_create__doc__},
+    {"pcap_open_offline", (PyCFunction)pypcap_pcap_open_offline, METH_VARARGS, pcap_open_offline__doc__},
+    {"pcap_datalink", (PyCFunction)pypcap_pcap_datalink, METH_VARARGS, pcap_datalink__doc__},
+    {"pcap_datalink_val_to_name", (PyCFunction)pypcap_pcap_datalink_val_to_name, METH_VARARGS, pcap_datalink_val_to_name__doc__},
+    {"pcap_datalink_val_to_description", (PyCFunction)pypcap_pcap_datalink_val_to_description, METH_VARARGS, pcap_datalink_val_to_description__doc__},
+    {"pcap_set_buffer_size", (PyCFunction)pypcap_pcap_set_buffer_size, METH_VARARGS, pcap_set_buffer_size__doc__},
+    {"pcap_set_snaplen", (PyCFunction)pypcap_pcap_set_snaplen, METH_VARARGS, pcap_set_snaplen__doc__},
+    {"pcap_set_timeout", (PyCFunction)pypcap_pcap_set_timeout, METH_VARARGS, pcap_set_timeout__doc__},
+    {"pcap_set_promisc", (PyCFunction)pypcap_pcap_set_promisc, METH_VARARGS, pcap_set_promisc__doc__},
+    {"pcap_activate",       (PyCFunction)pypcap_pcap_activate,   METH_VARARGS, pcap_activate__doc__},
+    {"pcap_compile",        (PyCFunction)pypcap_pcap_compile,    METH_VARARGS, pcap_compile__doc__},
+    {"pcap_set_callback",   (PyCFunction)pypcap_pcap_set_callback, METH_VARARGS, pcap_set_callback__doc__},
+    {"pcap_loop",           (PyCFunction)pypcap_pcap_loop,       METH_VARARGS|METH_KEYWORDS, pcap_loop__doc__},
+    {"pcap_sendpacket",     (PyCFunction)pypcap_pcap_sendpacket, METH_VARARGS, pcap_sendpacket__doc__},
+    {"pcap_set_rfmon",      (PyCFunction)pypcap_pcap_set_rfmon,  METH_VARARGS, pcap_set_rfmon__doc__},
+    {"pcap_can_set_rfmon",  (PyCFunction)pypcap_pcap_can_set_rfmon, METH_VARARGS, pcap_can_set_rfmon__doc__},
+    {"pcap_list_datalinks", (PyCFunction)pypcap_pcap_list_datalinks, METH_VARARGS, pcap_list_datalinks__doc__},
+    {"pcap_snapshot", (PyCFunction)pypcap_pcap_snapshot, METH_VARARGS, pcap_snapshot__doc__},
     {NULL, NULL}  /* Sentinel */
 };
 
 static PyMethodDef module_methods[] = {
     // Some helper funtions
+    {"pcap_datalink_name_to_val", pypcap_pcap_datalink_name_to_val, METH_VARARGS, pcap_datalink_name_to_val__doc__},
     {"pcap_lookupdev", pypcap_lookupdev, METH_VARARGS, pcap_lookupdev__doc__},
     {"pcap_findalldevs", pypcap_pcap_findalldevs, METH_VARARGS, pcap_findalldevs__doc__},
     {"pcap_lookupnet", pypcap_pcap_lookupnet, METH_VARARGS, pcap_lookupnet__doc__},

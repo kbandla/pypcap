@@ -82,6 +82,10 @@ For&nbsp;each&nbsp;packet&nbsp;captured,&nbsp;it&nbsp;will&nbsp;call&nbsp;the&nb
 that&nbsp;was&nbsp;set&nbsp;via&nbsp;<a href="#pcap-pcap_set_callback">pcap_set_callback</a>()<br>
 For&nbsp;the&nbsp;UID,&nbsp;somehting&nbsp;like&nbsp;'pwd.getpwnam('nobody').pw_uid)'&nbsp;can&nbsp;be&nbsp;used</tt></dd></dl>
 
+<dl><dt><a name="pypcap-pcap_open_offline"><strong>pcap_open_offline</strong></a>(...)</dt><dd><tt><a href="#pcap-pcap_open_offline">pcap_open_offline</a>(&nbsp;filepath&nbsp;)&nbsp;-&gt;&nbsp;bool<br>
+&nbsp;<br>
+open&nbsp;a&nbsp;saved&nbsp;capture&nbsp;file&nbsp;for&nbsp;reading</tt></dd></dl>
+
 <dl><dt><a name="pypcap-pcap_sendpacket"><strong>pcap_sendpacket</strong></a>(...)</dt><dd><tt><a href="#pcap-pcap_sendpacket">pcap_sendpacket</a>(&nbsp;packet&nbsp;)&nbsp;-&gt;&nbsp;bool<br>
 &nbsp;<br>
 Transmit&nbsp;a&nbsp;packet<br>
@@ -119,13 +123,14 @@ Set&nbsp;the&nbsp;snapshot&nbsp;length&nbsp;for&nbsp;a&nbsp;not-yet-activated&nb
 &nbsp;<br>
 Set&nbsp;the&nbsp;read&nbsp;timeout&nbsp;for&nbsp;a&nbsp;not-yet-activated&nbsp;capture&nbsp;handle</tt></dd></dl>
 
+<dl><dt><a name="pypcap-pcap_snapshot"><strong>pcap_snapshot</strong></a>(...)</dt><dd><tt><a href="#pcap-pcap_snapshot">pcap_snapshot</a>()&nbsp;-&gt;&nbsp;int<br>
+&nbsp;<br>
+get&nbsp;the&nbsp;snapshot&nbsp;length</tt></dd></dl>
+
 <hr>
 Data descriptors defined here:<br>
 <dl><dt><strong>callback</strong></dt>
 <dd><tt>Callback&nbsp;function</tt></dd>
-</dl>
-<dl><dt><strong>error</strong></dt>
-<dd><tt>Error&nbsp;message</tt></dd>
 </dl>
 <dl><dt><strong>interface</strong></dt>
 <dd><tt>Interface&nbsp;name</tt></dd>
@@ -141,7 +146,10 @@ Data and other attributes defined here:<br>
 <font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td></tr>
     
 <tr><td bgcolor="#eeaa77"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
-<td width="100%"><dl><dt><a name="-pcap_findalldevs"><strong>pcap_findalldevs</strong></a>(...)</dt><dd><tt><a href="#-pcap_findalldevs">pcap_findalldevs</a>()&nbsp;-&gt;&nbsp;list<br>
+<td width="100%"><dl><dt><a name="-pcap_datalink_name_to_val"><strong>pcap_datalink_name_to_val</strong></a>(...)</dt><dd><tt><a href="#-pcap_datalink_name_to_val">pcap_datalink_name_to_val</a>(&nbsp;name&nbsp;)&nbsp;-&gt;&nbsp;int<br>
+&nbsp;<br>
+get&nbsp;&nbsp;the&nbsp;&nbsp;link-layer&nbsp;header&nbsp;type&nbsp;value&nbsp;corresponding&nbsp;to&nbsp;a&nbsp;header&nbsp;type&nbsp;name</tt></dd></dl>
+ <dl><dt><a name="-pcap_findalldevs"><strong>pcap_findalldevs</strong></a>(...)</dt><dd><tt><a href="#-pcap_findalldevs">pcap_findalldevs</a>()&nbsp;-&gt;&nbsp;list<br>
 &nbsp;<br>
 Get&nbsp;a&nbsp;list&nbsp;of&nbsp;capture&nbsp;devices<br>
 Raises&nbsp;an&nbsp;exception&nbsp;with&nbsp;an&nbsp;appropriate&nbsp;message&nbsp;in&nbsp;case&nbsp;of&nbsp;errors</tt></dd></dl>
