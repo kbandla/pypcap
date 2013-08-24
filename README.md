@@ -3,8 +3,6 @@
 Python/C bindings for the libpcap library.
 Most of the functions are 1:1 mapped to the libpcap library. 
  
-Seems fairly stable on OSX. Needs some more work before it will work on linux.
-
 ## Example 1
 
 ```python
@@ -41,6 +39,11 @@ x.pcap_set_callback(pcap_callback)
 x.pcap_loop()
 ```
 
+## Notes
+### Linux
+* On 64-bit Linux, the buffer's size should be least the snap length set for the handle in use. If not, you will end up with a "can't mmap rx ring: Invalid argument" [error](http://stackoverflow.com/questions/11397367/issue-in-pcap-set-buffer-size). 
+* On Linux, root privileges are required even for module functions (pcap_lookupdev, etc )
+
 ### License
 See LICENSE file
 
@@ -51,4 +54,5 @@ See LICENSE file
 
 ### Tested on
 * OSX 10.8  - x86_64
-* Did not test on linux yet
+* Linux     - x86_64
+* Not tested on 32bit Linux/OSX, but should work

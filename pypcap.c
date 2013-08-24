@@ -11,7 +11,7 @@
 
 #include "docs.h"
 
-#define PYPCAP_VERSION  "0.1"
+#define PYPCAP_VERSION  "0.2"
 #define PyCHECK_SELF if(!self->pcap){   \
             PyErr_SetString(PyPcap_Error, "Please create a pcap capture instance first"); \
             return NULL;}   \
@@ -124,11 +124,13 @@ pypcap_pcap_findalldevs(PyObject *self)
     
     pcap_if_t *interfaces = NULL;
     if( pcap_findalldevs(&interfaces, pcap_errbuf) != 0){
-        // Error reading interface details
         PyErr_SetString(PyPcap_Error, pcap_errbuf);
         return NULL; 
-        //return interfacesL;
     } 
+    if(!interfaces){
+        PyErr_SetString(PyPcap_Error, "Could not get interface details");
+        return NULL; 
+    }
     while(interfaces->next != NULL){
         tmp = PyString_FromString( interfaces->name );
         if(PyList_Append(interfacesL, tmp)){
@@ -141,9 +143,6 @@ pypcap_pcap_findalldevs(PyObject *self)
     return interfacesL;
 }
 
-/*
-TODO: make sure that the interfce really exits
-*/
 static PyObject *
 pypcap_pcap_lookupnet(PyObject *self, PyObject *args)
 {
@@ -174,11 +173,11 @@ pypcap_pcap_lookupnet(PyObject *self, PyObject *args)
     }
     
     if(PyTuple_SetItem(network, 0, PyString_FromString(ipaddr_text))){
-        PyErr_SetString(PyPcap_Error, "PyDict_SetItem error");
+        PyErr_SetString(PyPcap_Error, "error setting tuple item(0)");
         return NULL;
     }
     if(PyTuple_SetItem(network, 1, PyString_FromString(mask_text))){
-        PyErr_SetString(PyPcap_Error, "PyDict_SetItem error");
+        PyErr_SetString(PyPcap_Error, "error setting tuple item(1)");
         return NULL;
     }
 
@@ -564,13 +563,21 @@ static PyTypeObject PyPcapType = {
 #endif
 PyMODINIT_FUNC initpypcap(void){
     PyObject *pypcap;
+    PyPcap_Error = PyErr_NewException("pcap.Error", NULL, NULL);
+    Py_INCREF(PyPcap_Error);
+#ifdef __linux__
+    if(getuid()!= 0){
+       PyErr_SetString(PyPcap_Error, "pypcap requires root privileges");
+        return NULL; 
+    }
+#endif
     if (PyType_Ready(&PyPcapType) < 0)
         return;
     // 'pcap' module
     pypcap = Py_InitModule3("pypcap", module_methods, "C/Python bindings for libpcap");
     if( pypcap == NULL)
         return;
-    PyPcap_Error = PyErr_NewException("pcap.Error", NULL, NULL);
     Py_INCREF(&PyPcapType);
     PyModule_AddObject(pypcap, "pcap", (PyObject *)&PyPcapType);
+    PyModule_AddStringConstant(pypcap, "__version__", PYPCAP_VERSION);
 }
