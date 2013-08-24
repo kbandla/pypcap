@@ -24,7 +24,7 @@ from pypcap import pcap
 import dpkt
 x = pcap()
 x.pcap_create( 'eth0' )
-x.pcap_set_promisc( 1 )
+x.pcap_set_promisc( True )
 x.pcap_activate()
 x.pcap_compile( 'udp' )
 
