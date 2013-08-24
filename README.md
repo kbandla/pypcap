@@ -24,9 +24,6 @@ from pypcap import pcap
 import dpkt
 x = pcap()
 x.pcap_create( 'eth0' )
-x.pcap_set_buffer_size( 1000 )
-x.pcap_set_snaplen( 576 )
-x.pcap_set_timeout( 512 )
 x.pcap_set_promisc( 1 )
 x.pcap_activate()
 x.pcap_compile( 'udp' )
