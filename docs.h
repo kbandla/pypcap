@@ -97,7 +97,7 @@ PyDoc_STRVAR(pcap_loop__doc__,
         "pcap_loop( [count], [uid] ) -> bool\n\n"
         "Starts the pcap capture loop\n"
         "@count = Number of packets to capture. Default = unlimited\n"
-        "@uid = UID of the user to run as. You should use 'nobody'\n"
+        "@uid = UID of the user to run as. Ex: nobody's UID \n"
         "\n"
         "For each packet captured, it will call the callback function \n"
         "that was set via pcap_set_callback()\n"
@@ -140,3 +140,19 @@ PyDoc_STRVAR(pcap_datalink_name_to_val__doc__,
         "pcap_datalink_name_to_val( name ) -> int\n\n"
         "get  the  link-layer header type value corresponding to a header type name"
         );
+
+PyDoc_STRVAR(pcap_stats__doc__,
+        "pcap_stats() -> dict\n\n"
+        "get capture statistics\n"
+        "ps_recv: number of packets received\n"
+        "ps_drop: number of packets dropped because there was no room in the operating system's buffer when they arrived, because packets weren't being read fast enoug\n"
+        "ps_ifdrop: number of packets dropped by the network interface or its driver\n"
+        "bs_capt: number of packets captured (Win32)\n"
+        );
+
+#ifdef Win32
+PyDoc_STRVAR(pcap_stats_ex__doc__,
+        "pcap_stats_ex() -> dict\n\n"
+        "This is only supported on Windows. Untested\n"
+        );
+#endif

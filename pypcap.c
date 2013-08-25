@@ -384,6 +384,7 @@ void handle_pkt(u_char *user, const struct pcap_pkthdr* pkthdr, const u_char* pa
     result = PyObject_CallObject( self->callback, arglist);
     if(result == NULL){
         pcap_breakloop(self->pcap);
+        PyErr_SetString(PyExc_TypeError, "Something went wrong");
     }
     PyGILState_Release(gstate);
     Py_DECREF(arglist);
@@ -533,6 +534,60 @@ pypcap_pcap_snapshot(PyPcapObject *self, PyObject *args)
     return tmp;
 }
 
+static PyObject*
+pypcap_pcap_stats(PyPcapObject *self)
+{
+    PyObject *stats = PyDict_New();
+    struct pcap_stat ps ;
+    if(pcap_stats(self->pcap, &ps) == -1){
+        PyErr_SetString(PyPcap_Error, pcap_geterr(self->pcap));
+        return NULL;
+    }
+
+    if(PyDict_SetItem(stats, PyString_FromString("ps_recv"), PyInt_FromLong(ps.ps_recv))){
+        PyErr_SetString(PyPcap_Error, "error setting dict item ps_recv");
+        return NULL;
+    }
+    if(PyDict_SetItem(stats, PyString_FromString("ps_drop"), PyInt_FromLong(ps.ps_drop))){
+        PyErr_SetString(PyPcap_Error, "error setting dict item ps_drop");
+        return NULL;
+    }
+    if(PyDict_SetItem(stats, PyString_FromString("ps_ifdrop"), PyInt_FromLong(ps.ps_ifdrop))){
+        PyErr_SetString(PyPcap_Error, "error setting dict item ps_drop");
+        return NULL;
+    }
+#ifdef WIN32
+    if(PyDict_SetItem(stats, PyString_FromString("bs_capt"), PyInt_FromLong(ps.bs_capt))){
+        PyErr_SetString(PyPcap_Error, "error setting dict item bs_capt");
+        return NULL;
+    }
+#endif
+
+    Py_XINCREF(stats);
+    return stats;
+
+}
+
+#ifdef WIN32
+static PyObject*
+pypcap_pcap_stats_ex(PyPcapObject *self){
+    PyObject *stats = PyDict_New();
+    struct pcap_stat_ex ps;
+    if(pcap_stats_ex(self->pcap, &ps) == -1){
+        PyErr_SetString(PyPcap_Error, pcap_geterr(self->pcap));
+        return NULL;
+    }
+
+    if(PyDict_SetItem(stats, PyString_FromString("rx_packets"), PyInt_FromLong(ps.rx_packets))){
+        PyErr_SetString(PyPcap_Error, "error setting dict item rx_packets");
+        return NULL;
+    }
+
+    Py_XINCREF(stats);
+    return stats;
+}
+#endif
+
 static PyMemberDef PyPcap_Members[] = {
     {"interface", T_OBJECT_EX, offsetof(PyPcapObject, interface), 0, "Interface name"},
     {"callback", T_OBJECT_EX, offsetof(PyPcapObject, callback), 0, "Callback function"},
@@ -558,6 +613,10 @@ static PyMethodDef PyPcap_Methods[] = {
     {"pcap_can_set_rfmon",  (PyCFunction)pypcap_pcap_can_set_rfmon, METH_VARARGS, pcap_can_set_rfmon__doc__},
     {"pcap_list_datalinks", (PyCFunction)pypcap_pcap_list_datalinks, METH_VARARGS, pcap_list_datalinks__doc__},
     {"pcap_snapshot", (PyCFunction)pypcap_pcap_snapshot, METH_VARARGS, pcap_snapshot__doc__},
+    {"pcap_stats", (PyCFunction)pypcap_pcap_stats, METH_VARARGS, pcap_stats__doc__},
+#ifdef Win32
+    {"pcap_stats_ex", (PyCFunction)pypcap_pcap_stats_ex, METH_VARARGS, pcap_stats_ex__doc__},
+#endif
     {NULL, NULL}  /* Sentinel */
 };
 
