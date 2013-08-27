@@ -41,6 +41,20 @@ x.pcap_loop()
 * On 64-bit Linux, the buffer's size should be least the snap length set for the handle in use. If not, you will end up with a "can't mmap rx ring: Invalid argument" [error](http://stackoverflow.com/questions/11397367/issue-in-pcap-set-buffer-size). 
 * On Linux, root privileges are required even for module functions (pcap_lookupdev, etc )
 
+### Research
+* Designing an iterator on top of pcap_next() is easy, but the fact that it calls pcap_dispatch() with cnt=1 seems like a performance drag compared to pcap_loop/callback. Needs more investigation.
+* Read more about GIL implementaion and thread-state for C Extensions
+
+### Remaining Work
+* Make it thread-safe
+* GIL / thread-state
+* Reference counting
+* Add pcap_dump routines
+* Add iterators for pcap_next
+* Add unittests
+* Add timestamp to pcap_loop callback
+* WIN32 Support
+
 ### License
 See LICENSE file
 
