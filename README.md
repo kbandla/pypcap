@@ -65,5 +65,5 @@ See LICENSE file
 
 ### Tested on
 * OSX 10.8  - x86_64
-* Linux     - x86_64
+* Linux     - x86_64, armv6l
 * Not tested on 32bit Linux/OSX, but should work
