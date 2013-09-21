@@ -34,12 +34,10 @@
 <p>Python/C bindings for the libpcap library.
 Most of the functions are 1:1 mapped to the libpcap library. </p>
 
-<p>Seems fairly stable on OSX. Needs some more work before it will work on linux.</p>
-
 <h2>
 <a name="example-1" class="anchor" href="#example-1"><span class="octicon octicon-link"></span></a>Example 1</h2>
 
-<div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span> <span class="nn">pypcap</span>
+<div class="highlight highlight-python"><pre><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span> <span class="nn">pypcap</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">pypcap</span><span class="o">.</span><span class="n">pcap_lookupdev</span><span class="p">()</span>
 <span class="s">'fw0'</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">pypcap</span><span class="o">.</span><span class="n">pcap_findalldevs</span><span class="p">()</span>
@@ -53,14 +51,11 @@ Most of the functions are 1:1 mapped to the libpcap library. </p>
 <h2>
 <a name="example-2" class="anchor" href="#example-2"><span class="octicon octicon-link"></span></a>Example 2</h2>
 
-<div class="highlight"><pre><span class="kn">from</span> <span class="nn">pypcap</span> <span class="kn">import</span> <span class="n">pcap</span>
+<div class="highlight highlight-python"><pre><span class="kn">from</span> <span class="nn">pypcap</span> <span class="kn">import</span> <span class="n">pcap</span>
 <span class="kn">import</span> <span class="nn">dpkt</span>
 <span class="n">x</span> <span class="o">=</span> <span class="n">pcap</span><span class="p">()</span>
 <span class="n">x</span><span class="o">.</span><span class="n">pcap_create</span><span class="p">(</span> <span class="s">'eth0'</span> <span class="p">)</span>
-<span class="n">x</span><span class="o">.</span><span class="n">pcap_set_buffer_size</span><span class="p">(</span> <span class="mi">1000</span> <span class="p">)</span>
-<span class="n">x</span><span class="o">.</span><span class="n">pcap_set_snaplen</span><span class="p">(</span> <span class="mi">576</span> <span class="p">)</span>
-<span class="n">x</span><span class="o">.</span><span class="n">pcap_set_timeout</span><span class="p">(</span> <span class="mi">512</span> <span class="p">)</span>
-<span class="n">x</span><span class="o">.</span><span class="n">pcap_set_promisc</span><span class="p">(</span> <span class="mi">1</span> <span class="p">)</span>
+<span class="n">x</span><span class="o">.</span><span class="n">pcap_set_promisc</span><span class="p">(</span> <span class="bp">True</span> <span class="p">)</span>
 <span class="n">x</span><span class="o">.</span><span class="n">pcap_activate</span><span class="p">()</span>
 <span class="n">x</span><span class="o">.</span><span class="n">pcap_compile</span><span class="p">(</span> <span class="s">'udp'</span> <span class="p">)</span>
 
@@ -72,7 +67,34 @@ Most of the functions are 1:1 mapped to the libpcap library. </p>
 <span class="n">x</span><span class="o">.</span><span class="n">pcap_loop</span><span class="p">()</span>
 </pre></div>
 
+<h2>
+<a name="notes" class="anchor" href="#notes"><span class="octicon octicon-link"></span></a>Notes</h2>
+
 <h3>
+<a name="linux" class="anchor" href="#linux"><span class="octicon octicon-link"></span></a>Linux</h3>
+
+<ul>
+<li>On 64-bit Linux, the buffer's size should be least the snap length set for the handle in use. If not, you will end up with a "can't mmap rx ring: Invalid argument" <a href="http://stackoverflow.com/questions/11397367/issue-in-pcap-set-buffer-size">error</a>. </li>
+<li>On Linux, root privileges are required even for module functions (pcap_lookupdev, etc )</li>
+</ul><h3>
+<a name="research" class="anchor" href="#research"><span class="octicon octicon-link"></span></a>Research</h3>
+
+<ul>
+<li>Designing an iterator on top of pcap_next() is easy, but the fact that it calls pcap_dispatch() with cnt=1 seems like a performance drag compared to pcap_loop/callback. Needs more investigation.</li>
+<li>Read more about GIL implementaion and thread-state for C Extensions</li>
+</ul><h3>
+<a name="remaining-work" class="anchor" href="#remaining-work"><span class="octicon octicon-link"></span></a>Remaining Work</h3>
+
+<ul>
+<li>Make it thread-safe</li>
+<li>GIL / thread-state</li>
+<li>Reference counting</li>
+<li>Add pcap_dump routines</li>
+<li>Add iterators for pcap_next</li>
+<li>Add unittests</li>
+<li>Add timestamp to pcap_loop callback</li>
+<li>WIN32 Support</li>
+</ul><h3>
 <a name="license" class="anchor" href="#license"><span class="octicon octicon-link"></span></a>License</h3>
 
 <p>See LICENSE file</p>
@@ -89,7 +111,8 @@ Most of the functions are 1:1 mapped to the libpcap library. </p>
 
 <ul>
 <li>OSX 10.8  - x86_64</li>
-<li>Did not test on linux yet</li>
+<li>Linux     - x86_64, armv6l</li>
+<li>Not tested on 32bit Linux/OSX, but should work</li>
 </ul>
       </section>
       <footer>
