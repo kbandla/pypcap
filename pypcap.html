@@ -6,7 +6,7 @@
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
 <tr bgcolor="#7799ee">
 <td valign=bottom>&nbsp;<br>
-<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>pypcap</strong></big></big> (version 0.2)</font></td
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>pypcap</strong></big></big> (version 0.3)</font></td
 ><td align=right valign=bottom
 ><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:/Volumes/DATA/devel/lib/python/pypcap.so">/Volumes/DATA/devel/lib/python/pypcap.so</a></font></td></tr></table>
     <p><tt>C/Python&nbsp;bindings&nbsp;for&nbsp;libpcap</tt></p>
@@ -68,6 +68,16 @@ get&nbsp;a&nbsp;name&nbsp;or&nbsp;description&nbsp;for&nbsp;a&nbsp;link-layer&nb
 &nbsp;<br>
 get&nbsp;a&nbsp;name&nbsp;or&nbsp;description&nbsp;for&nbsp;a&nbsp;link-layer&nbsp;header&nbsp;type&nbsp;value</tt></dd></dl>
 
+<dl><dt><a name="pypcap-pcap_dump"><strong>pcap_dump</strong></a>(...)</dt><dd><tt><a href="#pcap-pcap_dump">pcap_dump</a>()<br>
+&nbsp;<br>
+write&nbsp;packets&nbsp;to&nbsp;a&nbsp;capture&nbsp;file<br>
+@count&nbsp;=&nbsp;Number&nbsp;of&nbsp;packets&nbsp;to&nbsp;capture.&nbsp;Default&nbsp;=&nbsp;unlimited<br>
+@uid&nbsp;=&nbsp;UID&nbsp;of&nbsp;the&nbsp;user&nbsp;to&nbsp;run&nbsp;as.&nbsp;Ex:&nbsp;nobody's&nbsp;UID</tt></dd></dl>
+
+<dl><dt><a name="pypcap-pcap_dump_open"><strong>pcap_dump_open</strong></a>(...)</dt><dd><tt><a href="#pcap-pcap_dump_open">pcap_dump_open</a>(&nbsp;filename&nbsp;)&nbsp;-&gt;&nbsp;bool<br>
+&nbsp;<br>
+open&nbsp;a&nbsp;file&nbsp;to&nbsp;which&nbsp;to&nbsp;write&nbsp;packets</tt></dd></dl>
+
 <dl><dt><a name="pypcap-pcap_list_datalinks"><strong>pcap_list_datalinks</strong></a>(...)</dt><dd><tt><a href="#pcap-pcap_list_datalinks">pcap_list_datalinks</a>()&nbsp;-&gt;&nbsp;list<br>
 &nbsp;<br>
 Get&nbsp;a&nbsp;list&nbsp;of&nbsp;link-layer&nbsp;header&nbsp;types&nbsp;supported&nbsp;by&nbsp;a&nbsp;capture&nbsp;device</tt></dd></dl>
@@ -76,7 +86,7 @@ Get&nbsp;a&nbsp;list&nbsp;of&nbsp;link-layer&nbsp;header&nbsp;types&nbsp;support
 &nbsp;<br>
 Starts&nbsp;the&nbsp;<a href="#pcap">pcap</a>&nbsp;capture&nbsp;loop<br>
 @count&nbsp;=&nbsp;Number&nbsp;of&nbsp;packets&nbsp;to&nbsp;capture.&nbsp;Default&nbsp;=&nbsp;unlimited<br>
-@uid&nbsp;=&nbsp;UID&nbsp;of&nbsp;the&nbsp;user&nbsp;to&nbsp;run&nbsp;as.&nbsp;You&nbsp;should&nbsp;use&nbsp;'nobody'<br>
+@uid&nbsp;=&nbsp;UID&nbsp;of&nbsp;the&nbsp;user&nbsp;to&nbsp;run&nbsp;as.&nbsp;Ex:&nbsp;nobody's&nbsp;UID&nbsp;<br>
 &nbsp;<br>
 For&nbsp;each&nbsp;packet&nbsp;captured,&nbsp;it&nbsp;will&nbsp;call&nbsp;the&nbsp;callback&nbsp;function&nbsp;<br>
 that&nbsp;was&nbsp;set&nbsp;via&nbsp;<a href="#pcap-pcap_set_callback">pcap_set_callback</a>()<br>
@@ -127,10 +137,21 @@ Set&nbsp;the&nbsp;read&nbsp;timeout&nbsp;for&nbsp;a&nbsp;not-yet-activated&nbsp;
 &nbsp;<br>
 get&nbsp;the&nbsp;snapshot&nbsp;length</tt></dd></dl>
 
+<dl><dt><a name="pypcap-pcap_stats"><strong>pcap_stats</strong></a>(...)</dt><dd><tt><a href="#pcap-pcap_stats">pcap_stats</a>()&nbsp;-&gt;&nbsp;dict<br>
+&nbsp;<br>
+get&nbsp;capture&nbsp;statistics<br>
+ps_recv:&nbsp;number&nbsp;of&nbsp;packets&nbsp;received<br>
+ps_drop:&nbsp;number&nbsp;of&nbsp;packets&nbsp;dropped&nbsp;because&nbsp;there&nbsp;was&nbsp;no&nbsp;room&nbsp;in&nbsp;the&nbsp;operating&nbsp;system's&nbsp;buffer&nbsp;when&nbsp;they&nbsp;arrived,&nbsp;because&nbsp;packets&nbsp;weren't&nbsp;being&nbsp;read&nbsp;fast&nbsp;enoug<br>
+ps_ifdrop:&nbsp;number&nbsp;of&nbsp;packets&nbsp;dropped&nbsp;by&nbsp;the&nbsp;network&nbsp;interface&nbsp;or&nbsp;its&nbsp;driver<br>
+bs_capt:&nbsp;number&nbsp;of&nbsp;packets&nbsp;captured&nbsp;(Win32)</tt></dd></dl>
+
 <hr>
 Data descriptors defined here:<br>
 <dl><dt><strong>callback</strong></dt>
 <dd><tt>Callback&nbsp;function</tt></dd>
+</dl>
+<dl><dt><strong>config</strong></dt>
+<dd><tt>Capture&nbsp;config</tt></dd>
 </dl>
 <dl><dt><strong>interface</strong></dt>
 <dd><tt>Interface&nbsp;name</tt></dd>
@@ -170,5 +191,5 @@ Raises&nbsp;an&nbsp;exception&nbsp;with&nbsp;an&nbsp;appropriate&nbsp;message&nb
 <font color="#ffffff" face="helvetica, arial"><big><strong>Data</strong></big></font></td></tr>
     
 <tr><td bgcolor="#55aa55"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
-<td width="100%"><strong>__version__</strong> = '0.2'</td></tr></table>
+<td width="100%"><strong>__version__</strong> = '0.3'</td></tr></table>
 </body></html>
