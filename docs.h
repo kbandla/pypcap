@@ -156,3 +156,16 @@ PyDoc_STRVAR(pcap_stats_ex__doc__,
         "This is only supported on Windows. Untested\n"
         );
 #endif
+
+PyDoc_STRVAR(pcap_dump_open__doc__,
+        "pcap_dump_open( filename ) -> bool\n\n"
+        "open a file to which to write packets\n"
+        );
+
+PyDoc_STRVAR(pcap_dump__doc__,
+        "pcap_dump()\n\n"
+        "write packets to a capture file\n"
+        "@count = Number of packets to capture. Default = unlimited\n"
+        "@uid = UID of the user to run as. Ex: nobody's UID \n"
+        "\n"
+        );

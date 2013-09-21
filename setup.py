@@ -2,7 +2,7 @@ import os
 from distutils.core import setup, Extension
 
 def get_version():
-    with open(os.path.join(os.path.dirname(__file__), 'pypcap.c'),'r') as f:
+    with open(os.path.join(os.path.dirname(__file__), 'pypcap.h'),'r') as f:
         for line in f:
             if "#define PYPCAP_VERSION" in line:
                 return line.split()[-1].strip('"')
