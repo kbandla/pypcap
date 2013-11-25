@@ -28,7 +28,7 @@ x.pcap_set_promisc( True )
 x.pcap_activate()
 x.pcap_compile( 'udp' )
 
-def pcap_callback(pkt):
+def pcap_callback(pkt, ts):
     # do stuff with packet
     eth = dpkt.ethernet.Ethernet(pkt)
 
@@ -43,7 +43,7 @@ x.pcap_loop()
 
 ### Research
 * Designing an iterator on top of pcap_next() is easy, but the fact that it calls pcap_dispatch() with cnt=1 seems like a performance drag compared to pcap_loop/callback. Needs more investigation.
-* Read more about GIL implementaion and thread-state for C Extensions
+* Read more about GIL implementation and thread-state for C Extensions
 
 ### Remaining Work
 * Make it thread-safe
@@ -52,7 +52,6 @@ x.pcap_loop()
 * Add pcap_dump routines
 * Add iterators for pcap_next
 * Add unittests
-* Add timestamp to pcap_loop callback
 * WIN32 Support
 
 ### License

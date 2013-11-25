@@ -464,8 +464,11 @@ void handle_pkt(u_char *user, const struct pcap_pkthdr* pkthdr, const u_char* pa
     if(PyErr_CheckSignals()){
         pcap_breakloop(self->pcap);
     }
-    // TODO: extract the timestamp and pass on the call back
-    arglist = Py_BuildValue("(s#)", packet, pkthdr->len);
+    
+    struct timeval pktts = pkthdr->ts;
+    double tsdouble = pktts.tv_sec + pktts.tv_usec / 1000000.0;
+    arglist = Py_BuildValue("s#d", packet, pkthdr->len, tsdouble);
+
     PyGILState_STATE gstate;
     gstate = PyGILState_Ensure();
     result = PyObject_CallObject( self->callback, arglist);
