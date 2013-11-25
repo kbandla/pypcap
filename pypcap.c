@@ -19,6 +19,8 @@ PyObject *arglist;
 PyObject *result;
 int pcap_offset;
 char pcap_errbuf[PCAP_ERRBUF_SIZE];
+struct timeval pktts;
+double tsdouble;
 
 static void
 pypcap_dealloc(PyPcapObject* self)
@@ -53,6 +55,9 @@ pypcap_init(PyPcapObject *self, PyObject *args, PyObject *kwds)
         return -1; 
 
     if (interface) {
+#ifdef DEBUG
+        printf("init got an interface\n");
+#endif
         //save interface
         self->interface = interface;
         Py_XINCREF(self->interface);
@@ -61,8 +66,11 @@ pypcap_init(PyPcapObject *self, PyObject *args, PyObject *kwds)
             return -1;
         }
         Py_XINCREF(self->interface);
+    } else {
+#ifdef DEBUG
+        printf("init did not get an interface\n");
+#endif
     }
-
     return 0;
 }
 
@@ -79,9 +87,15 @@ pypcap_pcap_create(PyPcapObject *self, PyObject *args)
 {
     char *interface=NULL;
     if(self->interface == Py_None){
+#ifdef DEBUG
+        printf("No previous definitions for interface\n");
+#endif
         if (!PyArg_ParseTuple(args, "s", &interface)){
             return NULL;
         }
+#ifdef DEBUG
+        printf("pcap_create got an interface\n");
+#endif
         // save interface
         self->interface = PyString_FromString( interface );
         Py_XINCREF(self->interface);
@@ -91,6 +105,9 @@ pypcap_pcap_create(PyPcapObject *self, PyObject *args)
         }
         Py_XINCREF(self->interface);
     } else {
+#ifdef DEBUG
+        printf("Have a previous definition of interface\n");
+#endif
         interface = PyString_AsString(self->interface);
     }
 
@@ -116,7 +133,9 @@ pypcap_pcap_open_offline(PyPcapObject *self, PyObject *args)
     if (!PyArg_ParseTuple(args, "s", &filepath)){
         return NULL;
     }
-
+#ifdef DEBUG
+    printf("opening offline file : %s\n", filepath);
+#endif
     self->pcap = pcap_open_offline( filepath, pcap_errbuf);
 
     if(self->pcap==NULL){
@@ -135,6 +154,9 @@ pypcap_pcap_dump_open(PyPcapObject *self, PyObject *args)
     if (!PyArg_ParseTuple(args, "s", &filepath)){
         return NULL;
     }
+#ifdef DEBUG
+    printf("pcap_dump file : %s\n", filepath);
+#endif
     self->pcap_dumper = pcap_dump_open(self->pcap, filepath);
     if(self->pcap_dumper == NULL){
         PyErr_SetString(PyPcap_Error, pcap_geterr(self->pcap));
@@ -176,7 +198,10 @@ pypcap_pcap_dump(PyPcapObject *self, PyObject *args, PyObject *kwds){
             return NULL;
         }
     }
-    printf("Entering loop\n");
+#ifdef DEBUG
+    printf("Starting pcap_loop for packet capture to file :\n" );
+    printf("\tcount = %d | uid = %d\n", capture_count, uid);
+#endif
     ret = pcap_loop(self->pcap, capture_count, pcap_dumper_callback, (u_char*) self);
     if(ret == -1) {
         PyErr_SetString(PyPcap_Error, pcap_geterr(self->pcap));
@@ -235,6 +260,10 @@ pypcap_pcap_lookupnet(PyObject *self, PyObject *args)
         return NULL;
     }
 
+#ifdef DEBUG
+    printf("lookupnet %s\n", interface);
+#endif
+
     if (pcap_lookupnet(interface, &netaddr, &mask,pcap_errbuf) != 0){
         PyErr_SetString(PyPcap_Error, pcap_errbuf);
         return NULL; 
@@ -282,6 +311,9 @@ pypcap_pcap_datalink_name_to_val(PyObject *self, PyObject *args)
     if (!PyArg_ParseTuple(args, "s", &linkName)){
         return NULL;
     }
+#ifdef DEBUG
+    printf("datalink_name : %s\n", linkName);
+#endif
     linkType = pcap_datalink_name_to_val(linkName);
     
     if(linkType == -1){
@@ -464,9 +496,8 @@ void handle_pkt(u_char *user, const struct pcap_pkthdr* pkthdr, const u_char* pa
     if(PyErr_CheckSignals()){
         pcap_breakloop(self->pcap);
     }
-    
-    struct timeval pktts = pkthdr->ts;
-    double tsdouble = pktts.tv_sec + pktts.tv_usec / 1000000.0;
+    pktts = pkthdr->ts;
+    tsdouble = pktts.tv_sec + pktts.tv_usec / 1000000.0;
     arglist = Py_BuildValue("s#d", packet, pkthdr->len, tsdouble);
 
     PyGILState_STATE gstate;
