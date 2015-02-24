@@ -467,8 +467,14 @@ pypcap_pcap_compile(PyPcapObject *self, PyObject *args)
     }
     capture_interface = PyString_AsString( self->interface);
     if (pcap_lookupnet(capture_interface,&netaddr,&mask,pcap_errbuf) != 0){
-        PyErr_SetString(PyPcap_Error, pcap_geterr(self->pcap));
-        return NULL; 
+        /* 
+           This could happen if the interface is not configured
+           Set netmask to PCAP_NETMASK_UNKNOWN instead and proceed
+       */
+        mask = PCAP_NETMASK_UNKNOWN;
+#ifdef DEBUG
+        printf("Could not get IPv4 information for the interface.\n");
+#endif
     }
 
     if (pcap_compile(self->pcap,&filter, (char *)capture_filter, 1, mask) !=0){
